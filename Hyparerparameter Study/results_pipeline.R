@@ -13,7 +13,7 @@ library(ggpubr)
 library(stringr)
 
 # gene lengths + experiment settings
-gene_lengths <- t(read.csv("/Users/zhasmina/Downloads/gene_lengths_ch38.csv", row.names=1))
+gene_lengths <- t(read.csv("../gene_lengths_ch38.csv", row.names=1))
 experiment <- "2(7)"
 folder <- "HYPERPARAMETERS"
 
@@ -121,6 +121,7 @@ for (areg in alpha_regfolgs) {
       stats_removed <- perfStats(removed_cor, de_ground_truth, gene_count)
       stats_removed_reg <- perfStats(removed_reg_cor, de_ground_truth, gene_count)
 
+      # organise results data frame
       res_df <- data.frame(
         time=c(0,0,time_noreg, time_reg),
         tpr=c(stats_batch[["tpr"]], stats_nobatch[["tpr"]], stats_removed[["tpr"]], stats_removed_reg[["tpr"]]),
@@ -147,10 +148,6 @@ for (areg in alpha_regfolgs) {
   }
 }
 
-for (fix in 57:64) {
-  experiment_list[[fix]] <- c(3, 4, 0.9, lambda_regfolds[fix-56], 0.1)
-}
-
 hyperparams_df <- t(as.data.frame(experiment_list))
 colnames(hyperparams_df) <- c("bmean","bdisp","alpha","lambd","prec")
 rownames(hyperparams_df) <- seq_len(nrow(hyperparams_df))
@@ -162,45 +159,3 @@ hyperparams_df$lambd <- gsub("1e-04","0.0001",as.factor(hyperparams_df$lambd))
 write.csv(hyperparams_df,
           paste0("/Users/zhasmina/Desktop/EXPERIMENTS/",folder,"/mbfold",
           as.character(batch_fold),"_dbfold",as.character(disp_fold_level),".csv"))
-
-
-ggplot(hyperparams_df, aes(x=alpha, y=lambd, fill=prec))+
-  geom_tile() +
-  facet_grid(bmean~bdisp)
-
-
-## PCA
-plot_group1 <- PCAplotter_sce(count_batch, as.factor(batch), as.factor(group), "Group")
-plot_batch1 <- PCAplotter_sce(count_batch, as.factor(batch), as.factor(group), "Batch")
-
-plot_group2 <- PCAplotter_sce(count_nobatch, as.factor(batch), as.factor(group), "Group")
-plot_batch2 <- PCAplotter_sce(count_nobatch, as.factor(batch), as.factor(group), "Batch")
-
-ggarrange(plot_group1, plot_batch1, plot_group2, plot_batch2, ncol=2, nrow=2,
-          labels=c("A", "", "B"))
-ggsave(paste0("/Users/zhasmina/Desktop/EXPERIMENTS/",folder,
-              "/experiment_",experiment,
-              "/bfold",as.character(batch_fold),
-              "_dfold",as.character(disp_fold_level),"_batchnobatch.png"))
-
-plot_group1 <- PCAplotter_sce(count_batchremoved, as.factor(batch), as.factor(group), "Group")
-plot_batch1 <- PCAplotter_sce(count_batchremoved, as.factor(batch), as.factor(group), "Batch")
-
-plot_group2 <- PCAplotter_sce(count_batchremoved_reg, as.factor(batch), as.factor(group), "Group")
-plot_batch2 <- PCAplotter_sce(count_batchremoved_reg, as.factor(batch), as.factor(group), "Batch")
-
-ggarrange(plot_group1, plot_batch1, plot_group2, plot_batch2, ncol=2, nrow=2,
-          labels=c("A", "", "B"))
-ggsave(paste0("/Users/zhasmina/Desktop/EXPERIMENTS/",folder,
-              "/experiment_",experiment,
-              "/bfold",as.character(batch_fold),
-              "_dfold",as.character(disp_fold_level),"_regnoreg.png"))
-
-#### save results
-write.csv(res_df,
-          paste0("/Users/zhasmina/Desktop/EXPERIMENTS/",folder,
-                 #"/experiment_",experiment,
-                 "/",as.character(format(lambda_reg, scientific=FALSE)),
-                 "_",as.character(format(alpha_reg, scientific=FALSE)),
-                 "/bfold",as.character(batch_fold),
-                 "_dfold",as.character(disp_fold_level),"_res_df.csv"))
