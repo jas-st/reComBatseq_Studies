@@ -1,45 +1,4 @@
-#getJaccard <- function(de_genes, truegenes) {
-#  intersection <- length(intersect(de_genes, truegenes))
-#  union <- length(de_genes) + length(truegenes) - intersection
-#  return(intersection/union)
-#}
-
-#PCAplotter_matrix <- function(countdf, batchvec, groupvec) {
-#  coldat <- cbind(batchvec, groupvec)
-#  colnames(coldat) <- c("batch", "group")
-
-  #counts_norm <- as.matrix(apply(countdf, 2, function(x){x/sum(x)}))
-#  counts_norm <- scale(normalizeCounts(countdf))
-
-#  seobj <- SummarizedExperiment(assays=counts_norm, colData=coldat)
-#  pca_obj <- plotPCA(DESeqTransform(seobj), intgroup=c("batch","group"))
-#  pca_obj$data$group.1 <- as.factor(pca_obj$data$group.1)
-#  pca_obj$data$batch <- as.factor(pca_obj$data$batch)
-#  plt <- ggplot(pca_obj$data, aes(x=PC1, y=PC2, shape=group.1, colour=batch)) +
-#    geom_point(size=3) + theme_bw() +
-#    labs(x=sprintf("PC1: %s Variance", percent(pca_obj$plot_env$percentVar[1])),
-#         y=sprintf("PC2: %s Variance", percent(pca_obj$plot_env$percentVar[2])))
-#  plt
-#}
-
-#PCAplotter_group <- function(countdf, batchvec, groupvec) {
-#  coldat <- cbind(batchvec, groupvec)
-#  colnames(coldat) <- c("batch", "group")
-
-  #counts_norm <- as.matrix(apply(countdf, 2, function(x){x/sum(x)}))
-#  counts_norm <- scale(normalizeCounts(countdf))
-
-#  seobj <- SummarizedExperiment(assays=counts_norm, colData=coldat)
-#  pca_obj <- plotPCA(DESeqTransform(seobj), intgroup=c("batch","group"))
-#  pca_obj$data$group.1 <- as.factor(pca_obj$data$group.1)
-#  pca_obj$data$batch <- as.factor(pca_obj$data$batch)
-#  plt <- ggplot(pca_obj$data, aes(x=PC1, y=PC2, shape=batch, colour=group.1)) +
-#    geom_point(size=3) + theme_bw() +
-#    labs(x=sprintf("PC1: %s Variance", percent(pca_obj$plot_env$percentVar[1])),
-#         y=sprintf("PC2: %s Variance", percent(pca_obj$plot_env$percentVar[2])))
-#  plt
-#}
-
+### Creates a SingleCellExperiment object from count data, normalizes it, runs PCA, and returns the PCA-transformed object
 PCAplotter_sce <- function(countdf, batchvec, groupvec) {
   sce <- SingleCellExperiment(assays=list(counts=countdf),
                               colData=list(Batch=batchvec, Group=groupvec))
@@ -52,39 +11,8 @@ PCAplotter_sce <- function(countdf, batchvec, groupvec) {
   return(sim_pca)
 }
 
-#LDAscore <- function(countdf, batchdf) {
-#  X <- t(countdf)
-
-#  filter1 <- colSums(X) > 1
-#  X <- X[,filter1]
-  #batchdf <- batchdf[filter1]
-
-#  filter2 <- apply(X, 2, function(col) length(unique(col)))>2
-#  X <- X[,filter2]
-  #batchdf <- batchdf[filter2]
-
-#  folds <- createFolds(batchdf, k = 10, list = TRUE)
-#  scores <- numeric(10)
-
- # for (i in seq_along(folds)) {
-#    val_idx <- folds[[i]]
-#    train_idx <- setdiff(seq_along(batchdf), val_idx)
-
-#    X_train <- X[train_idx, , drop = FALSE]
-#    y_train <- batchdf[train_idx]
-
-#    X_val <- X[val_idx, , drop = FALSE]
-#    y_val <- batchdf[val_idx]
-
- #   lda_model <- lda(X_train, grouping = y_train)
-#    preds <- predict(lda_model, X_val)$class
-
- #   acc <- mean(preds == y_val)
-#    scores[i] <- acc
-#  }
-#  return(median(scores))
-#}
-
+### Generates a PCA plot, coloring points by the given variable
+### the two functions were separated for more flexibility and to not repeat the pca every time we want a different color
 PCAplotter <- function(sim_pca, colorby) {
   if (colorby=="Group") {
     plotPCA(sim_pca, colour_by = colorby) + scale_color_viridis_d(option='D') +
@@ -96,50 +24,7 @@ PCAplotter <- function(sim_pca, colorby) {
   }
 }
 
-#Rtsneplotter_batch <- function(countlog, batchvec, groupvec) {
-  # Calculate tSNE using Rtsne(0 function)
-#  tsne_out <- Rtsne(t(countlog), check_duplicates = FALSE,
-#                    perplexity = floor((ncol(countlog) - 1) / 3))
-
-  # Conversion of matrix to dataframe
-#  tsne_plot <- data.frame(x = tsne_out$Y[,1],
-#                          y = tsne_out$Y[,2],
-#                          batches = as.factor(batchvec),
-#                          group = as.factor(groupvec))
-
-  # Plotting the plot using ggplot() function
-#  ggplot2::ggplot(tsne_plot) + geom_point(aes(x=x,y=y,colour=batches, shape=group), size=2) +
-#    theme_bw()
-#}
-
-#Rtsneplotter_group <- function(countlog, batchvec, groupvec) {
-  # Calculate tSNE using Rtsne(0 function)
-#  tsne_out <- Rtsne(t(countlog), check_duplicates = FALSE,
- #                   perplexity = floor((ncol(countlog) - 1) / 3))
-
-  # Conversion of matrix to dataframe
-#  tsne_plot <- data.frame(x = tsne_out$Y[,1],
-#                          y = tsne_out$Y[,2],
-#                          batches = as.factor(batchvec),
-#                          group = as.factor(groupvec))
-
-  # Plotting the plot using ggplot() function
-#  ggplot2::ggplot(tsne_plot) + geom_point(aes(x=x,y=y,colour=group, shape=batches), size=2) +
-#    theme_bw()
-#}
-
-#trueDE <- function(object){
-  #Output DE genes, defined by > 1.5 logFC, for the two target groups
-
-#  output <- list()
-#  rowdata <- rowData(object)
-#  fc <- rowdata[,"DEFacGroup1"]/rowdata[,"DEFacGroup2"]
-#  fc[fc < 1] <- 1/fc[fc < 1]
-#  output$DEidx <- as.numeric(fc > 1.5)
-#  output$DE <- as.character(rowdata$Gene)[output$DEidx==1]
-#  return(output)
-#}
-
+### edgeR-based differential expression pipeline, taken from ComBat-seq
 edgeR_DEpipe <- function(counts_mat, batch, group, include.batch, alpha.unadj, alpha.fdr, covar=NULL){
   cat("DE tool: edgeR\n")
   y <- DGEList(counts=counts_mat)
@@ -165,6 +50,7 @@ edgeR_DEpipe <- function(counts_mat, batch, group, include.batch, alpha.unadj, a
   return(list(unadj=de_called, fdr=de_called_fdr, de_res=de_res, design=design))
 }
 
+### Computes performance metrics (TPR, FPR, precision) for detected DE genes against a ground truth set
 perfStats <- function(called_vec, ground_truth_vec, N_genes){
   if(length(called_vec)==0){
     tpr <- fpr <- 0
@@ -182,6 +68,7 @@ perfStats <- function(called_vec, ground_truth_vec, N_genes){
   return(c(tpr=tpr, fpr=fpr, prec=prec))
 }
 
+### Generates a simulated experimental design matrix with confounded variables
 createConfoundedDesign <- function(n_samples) {
   new_group <- replicate(3, sample(0:2, n_samples, replace=TRUE))
   last_col <- (new_group[,1]+1)%%3
