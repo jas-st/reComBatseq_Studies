@@ -157,5 +157,5 @@ hyperparams_df$lambd <- gsub("1e-04","0.0001",as.factor(hyperparams_df$lambd))
 
 
 write.csv(hyperparams_df,
-          paste0("/Users/zhasmina/Desktop/EXPERIMENTS/",folder,"/mbfold",
+          paste0("EXPERIMENTS/",folder,"/mbfold",
           as.character(batch_fold),"_dbfold",as.character(disp_fold_level),".csv"))
