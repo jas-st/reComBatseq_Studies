@@ -5,7 +5,8 @@ library(tidyverse)
 
 #### HYPERPARAMETERS
 
-temp = list.files(path="EXPERIMENTS/HYPERPARAMETERS",
+## path to the csvs created with the pipeline (uncompressed)
+temp = list.files(path="Hyperparameter Study",
                   pattern="\\.csv$", full.names=TRUE)
 myfiles = lapply(temp, read.csv)
 
@@ -28,6 +29,6 @@ ggplot(full_df, aes(x=alpha, y=lambd, fill=prec))+
   guides(fill = guide_colourbar(title = "Precision")) +
   theme(axis.text.x=element_text(angle=45, hjust=1))
 
-#ggsave("/Users/zhasmina/Desktop/EXPERIMENTS/HYPERPARAMETERS/hyperparams_heatmap2.png", scale=2)
+#ggsave("Hyperparameter Study/hyperparams_heatmap2.png", scale=2)
 
 
