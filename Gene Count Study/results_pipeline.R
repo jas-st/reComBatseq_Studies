@@ -13,16 +13,13 @@ library(ggpubr)
 library(stringr)
 library(dplyr)
 
-# remove all loaded variables except functions
-rm(list = setdiff(ls(), lsf.str()))
-
 # gene lengths + experiment settings
-gene_lengths <- t(read.csv("/Users/zhasmina/Downloads/gene_lengths_ch38.csv", row.names=1))
+gene_lengths <- t(read.csv("../gene_lengths_ch38.csv", row.names=1))
 experiment <- "2(14)"
-folder <- "SAMPLES"
-N_total_sample <- round(2^12) # total number of samples
+folder <- "GENES"
+gene_count = round(2^14) # amount of genes
 
-gene_count = round(2^10) # amount of genes
+N_total_sample <- round(2^10) # total number of samples
 n_batches <- 2 # amount of batches
 n_groups <- 2 # amount of biological groups
 N_samples <- rep(N_total_sample/(n_batches*n_groups), n_groups*n_batches)
@@ -60,8 +57,7 @@ for(iter in 1:5){
   true_nulls <- gene_names[G_nulls]
 
 
-  saveRDS(de_ground_truth_ind, file = paste0("/Users/zhasmina/Desktop/EXPERIMENTS/",folder,
-                                   "/experiment_",experiment,
+  saveRDS(de_ground_truth_ind, file = paste0("EXPERIMENTS/",folder, "/experiment_",experiment,
                                    "/iter",iter,"_DEgenes.rds"))
 
   ## Fold change matrix and size matrix
@@ -88,11 +84,11 @@ for(iter in 1:5){
   colnames(nobatch_df) <- paste0("Sample", seq_len(N_total_sample))
 
   write.csv(batch_df,
-            paste0("/Users/zhasmina/Desktop/EXPERIMENTS/",folder,
+            paste0("EXPERIMENTS/",folder,
                    "/experiment_",experiment,
                    "/iter",iter,"_batch_df.csv"))
   write.csv(nobatch_df,
-            paste0("/Users/zhasmina/Desktop/EXPERIMENTS/",folder,
+            paste0("EXPERIMENTS/",folder,
                    "/experiment_",experiment,
                    "/iter",iter,"_nobatch_df.csv"))
 
@@ -101,7 +97,7 @@ for(iter in 1:5){
   count_batch_transformed <- voom(count_batch_transformed, model.matrix(~as.factor(group)))
 
   write.csv(count_batch_transformed$E,
-            paste0("/Users/zhasmina/Desktop/EXPERIMENTS/",folder,
+            paste0("EXPERIMENTS/",folder,
                    "/experiment_",experiment,
                    "/iter",iter,"_countmat_batch_transformed.csv"))
 
@@ -116,7 +112,7 @@ for(iter in 1:5){
   #qr(covmat)$rank
 
   write.csv(covmats[[1]],
-            paste0("/Users/zhasmina/Desktop/EXPERIMENTS/",folder,
+            paste0("EXPERIMENTS/",folder,
                    "/experiment_",experiment,"/covmat.csv"))
 
   start.time <- Sys.time()
@@ -126,11 +122,11 @@ for(iter in 1:5){
   time_reg <- as.numeric(difftime(end.time,start.time, units="mins"))
 
   write.csv(combatseq_df,
-            paste0("/Users/zhasmina/Desktop/EXPERIMENTS/",folder,
+            paste0("EXPERIMENTS/",folder,
                    "/experiment_",experiment,
                    "/iter",iter,"_combatseq_df.csv"))
   write.csv(recombatseq_df,
-            paste0("/Users/zhasmina/Desktop/EXPERIMENTS/",folder,
+            paste0("EXPERIMENTS/",folder,
                    "/experiment_",experiment,
                    "/iter",iter,"_recombatseq_df.csv"))
 
@@ -176,5 +172,5 @@ res_df <- Reduce(`+`, res_list) / length(res_list)
 
 #### save results
 write.csv(res_df,
-          paste0("/Users/zhasmina/Desktop/EXPERIMENTS/",folder,
+          paste0("EXPERIMENTS/",folder,
                  "/experiment_",experiment,"/results.csv"))
