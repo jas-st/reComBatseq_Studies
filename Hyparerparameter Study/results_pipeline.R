@@ -15,7 +15,7 @@ library(stringr)
 # gene lengths + experiment settings
 gene_lengths <- t(read.csv("../gene_lengths_ch38.csv", row.names=1))
 experiment <- "2(7)"
-folder <- "HYPERPARAMETERS"
+folder <- "Hyperparameter Study"
 
 mean_batchfolds <- c(1,1.5,2,3)
 disp_batchfolds <- c(1,2,3,4)
@@ -157,5 +157,5 @@ hyperparams_df$lambd <- gsub("1e-04","0.0001",as.factor(hyperparams_df$lambd))
 
 
 write.csv(hyperparams_df,
-          paste0("EXPERIMENTS/",folder,"/mbfold",
+          paste0(folder,"/mbfold",
           as.character(batch_fold),"_dbfold",as.character(disp_fold_level),".csv"))
