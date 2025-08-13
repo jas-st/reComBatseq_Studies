@@ -57,8 +57,7 @@ for(iter in 1:5){
   true_nulls <- gene_names[G_nulls]
 
 
-  saveRDS(de_ground_truth_ind, file = paste0(folder, "/DATA/",experiment,
-                                   "_iter",iter,"_DEgenes.rds"))
+  saveRDS(de_ground_truth_ind, file = paste0(folder, "/DATA/", experiment, "_iter", iter, "_DEgenes.rds"))
 
   ## Fold change matrix and size matrix
   #for baseline datasets without batch effect
@@ -84,19 +83,16 @@ for(iter in 1:5){
   colnames(nobatch_df) <- paste0("Sample", seq_len(N_total_sample))
 
   write.csv(batch_df,
-            paste0(folder, "/DATA/",experiment,
-                                   "_iter",iter,"_batch_df.csv"))
+            paste0(folder, "/DATA/",experiment, "_iter",iter,"_batch_df.csv"))
   write.csv(nobatch_df,
-            paste0(folder, "/DATA/",experiment,
-                                   "_iter",iter,"_nobatch_df.csv"))
+            paste0(folder, "/DATA/",experiment,"_iter",iter,"_nobatch_df.csv"))
 
   count_batch_transformed <- DGEList(counts=batch_df)
   count_batch_transformed <- edgeR::calcNormFactors(count_batch_transformed, method="TMM")
   count_batch_transformed <- voom(count_batch_transformed, model.matrix(~as.factor(group)))
 
   write.csv(count_batch_transformed$E,
-            paste0(folder, "/DATA/",experiment,
-                                   "_iter",iter,"_countmat_batch_transformed.csv"))
+            paste0(folder, "/DATA/",experiment,"_iter",iter,"_countmat_batch_transformed.csv"))
 
   # Batch correction
   start.time <- Sys.time()
@@ -118,11 +114,9 @@ for(iter in 1:5){
   time_reg <- as.numeric(difftime(end.time,start.time, units="mins"))
 
   write.csv(combatseq_df,
-            paste0(folder, "/DATA/",experiment,
-                                   "_iter",iter,"_combatseq_df.csv"))
+            paste0(folder, "/DATA/",experiment,"_iter",iter,"_combatseq_df.csv"))
   write.csv(recombatseq_df,
-            paste0(folder, "/DATA/",experiment,
-                                   "_iter",iter,"_recombatseq_df.csv"))
+            paste0(folder, "/DATA/",experiment,"_iter",iter,"_recombatseq_df.csv"))
 
   ## DE Analysis
   nobatch_cor <- edgeR_DEpipe(nobatch_df, batch=batch, group=group,
