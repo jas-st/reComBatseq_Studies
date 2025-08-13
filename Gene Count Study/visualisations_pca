@@ -83,7 +83,7 @@ for(iter in 1:5){
   ggarrange(ggar1_1, ggar2_1, ggar1_2, ggar2_2, nrow=4,
             labels=c("A","B","A","B"))
 
-  ggsave(paste0(folder, "/PCA/", experiment, "_iter", iter, "_PCAplots.png"), height=10, width=10, dpi=300)
+  ggsave(paste0(folder, "/PCA Plots/", experiment, "_iter", iter, "_PCAplots.png"), height=10, width=10, dpi=300)
 
 
   rm(recombat_df, batch_df, nobatch_df, combatseq_df, recombatseq_df, group_legend,
