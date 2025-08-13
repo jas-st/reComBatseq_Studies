@@ -1,26 +1,23 @@
-rm(list = setdiff(ls(), lsf.str()))
-
-experiment <- "20"
-folder <- "BATCHES_bigeffect"
+experiment <- "2(14)"
+folder <- "Gene Count Study"
+gene_count = round(2^14) # amount of genes
 
 N_total_sample <- 6000 # total number of samples
-gene_count = round(2^10) # amount of genes
+n_batches <- 2 # amount of batches
+n_groups <- 2 # amount of biological groups
 
-#n_batches <- 2 # amount of batches
-#n_groups <- 2 # amount of biological groups
-
-#batch <- rep(1:n_batches, each=N_total_sample/n_batches)
-#group <- rep(rep(0:(n_groups-1), n_batches), each=N_total_sample/(n_batches*n_groups))
+batch <- rep(1:n_batches, each=N_total_sample/n_batches)
+group <- rep(rep(0:(n_groups-1), n_batches), each=N_total_sample/(n_batches*n_groups))
 
 stats_recombat <- vector("list", 5)
-#stats_pycombat <- vector("list", 5)
+stats_pycombat <- vector("list", 5)
 
 for(iter in 1:5){
   cat(paste("Iteration", iter, "\n"))
 
-  #pycombat_df <- read.csv(paste0("/Users/zhasmina/Desktop/EXPERIMENTS/",folder,
-  #                               "/experiment_",experiment,
-  #                               "/iter",iter,"_pycombat_df.csv"), row.names=1)
+  pycombat_df <- read.csv(paste0("/Users/zhasmina/Desktop/EXPERIMENTS/",folder,
+                                 "/experiment_",experiment,
+                                 "/iter",iter,"_pycombat_df.csv"), row.names=1)
   recombat_df <- read.csv(paste0("/Users/zhasmina/Desktop/EXPERIMENTS/",folder,
                                  "/experiment_",experiment,
                                  "/iter",iter,"_recombat_df.csv"), row.names=1)
