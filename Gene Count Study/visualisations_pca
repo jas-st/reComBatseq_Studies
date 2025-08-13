@@ -1,10 +1,8 @@
-rm(list = setdiff(ls(), lsf.str()))
-
 experiment <- "2(14)"
-folder <- "SAMPLES"
+folder <- "Gene Count Study"
+gene_count = round(2^14) # amount of genes
 
-N_total_sample <- round(2^14) # total number of samples
-gene_count = round(2^10) # amount of genes
+N_total_sample <- round(2^10) # total number of samples
 
 n_batches <- 2 # amount of batches
 n_groups <- 2 # amount of biological groups
@@ -16,24 +14,12 @@ for(iter in 1:5){
   cat(paste("Iteration", iter, "\n"))
 
   # read in count matrices
-  recombat_df <- read.csv(paste0("/Users/zhasmina/Desktop/EXPERIMENTS/",folder,
-                                 "/experiment_",experiment,
-                                 "/iter",iter,"_recombat_df.csv"), row.names=1)
-  batch_df <- read.csv(paste0("/Users/zhasmina/Desktop/EXPERIMENTS/",folder,
-                              "/experiment_",experiment,
-                              "/iter",iter,"_batch_df.csv"), row.names=1)
-  nobatch_df <- read.csv(paste0("/Users/zhasmina/Desktop/EXPERIMENTS/",folder,
-                                "/experiment_",experiment,
-                                "/iter",iter,"_nobatch_df.csv"), row.names=1)
-  combatseq_df <- read.csv(paste0("/Users/zhasmina/Desktop/EXPERIMENTS/",folder,
-                                  "/experiment_",experiment,
-                                  "/iter",iter,"_combatseq_df.csv"), row.names=1)
-  recombatseq_df <- read.csv(paste0("/Users/zhasmina/Desktop/EXPERIMENTS/",folder,
-                                    "/experiment_",experiment,
-                                    "/iter",iter,"_recombatseq_df.csv"), row.names=1)
-  pycombat_df <- read.csv(paste0("/Users/zhasmina/Desktop/EXPERIMENTS/",folder,
-                              "/experiment_",experiment,
-                              "/iter",iter,"_pycombat_df.csv"), row.names=1)
+  recombat_df <- read.csv(paste0(folder, "/DATA/", experiment, "_iter", iter, "_recombat_df.csv"), row.names=1)
+  batch_df <- read.csv(paste0(folder, "/DATA/", experiment, "_iter", iter, "_batch_df.csv"), row.names=1)
+  nobatch_df <- read.csv(paste0(folder, "/DATA/", experiment, "_iter", iter, "_nobatch_df.csv"), row.names=1)
+  combatseq_df <- read.csv(paste0(folder, "/DATA/", experiment, "_iter", iter, "_combatseq_df.csv"), row.names=1)
+  recombatseq_df <- read.csv(paste0(folder, "/DATA/", experiment, "_iter", iter, "_recombatseq_df.csv"), row.names=1)
+  pycombat_df <- read.csv(paste0(folder, "/DATA/", experiment, "_iter", iter, "_pycombat_df.csv"), row.names=1)
 
   ### PCA
   group_legend <- as_ggplot(get_legend(
@@ -97,9 +83,7 @@ for(iter in 1:5){
   ggarrange(ggar1_1, ggar2_1, ggar1_2, ggar2_2, nrow=4,
             labels=c("A","B","A","B"))
 
-  ggsave(paste0("/Users/zhasmina/Desktop/EXPERIMENTS/",folder,
-                "/experiment_",experiment,
-                "/iter",iter,"_PCAplots.png"), height=10, width=10, dpi=300)
+  ggsave(paste0(folder, "/PCA/", experiment, "_iter", iter, "_PCAplots.png"), height=10, width=10, dpi=300)
 
 
   rm(recombat_df, batch_df, nobatch_df, combatseq_df, recombatseq_df, group_legend,
