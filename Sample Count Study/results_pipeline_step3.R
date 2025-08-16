@@ -1,8 +1,8 @@
 experiment <- "2(14)"
-folder <- "Gene Count Study"
-gene_count = round(2^14) # amount of genes
+folder <- "Sample Count Study"
+N_total_sample <- round(2^14) # total number of samples
 
-N_total_sample <- round(2^10) # total number of samples
+gene_count = round(2^10) # amount of genes
 n_batches <- 2 # amount of batches
 n_groups <- 2 # amount of biological groups
 
