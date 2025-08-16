@@ -3,7 +3,7 @@ library(viridis)
 library(stringr)
 library(tidyverse)
 
-#### GENES
+#### SAMPLES
 
 # path containing the results dataframes
 temp = list.files(path="/Sample Count Study/DATA",

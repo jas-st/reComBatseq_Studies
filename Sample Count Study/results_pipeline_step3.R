@@ -18,10 +18,6 @@ for(iter in 1:5){
   pycombat_df <- read.csv(paste0(folder, "/DATA/", experiment, "_iter", iter, "_pycombat_df.csv"), row.names=1)
   recombat_df <- read.csv(paste0(folder, "/DATA/", experiment, "_iter", iter, "_recombat_df.csv"), row.names=1)
 
-  metadata <- read.csv(paste0(folder, "/DATA/", experiment, "_iter", iter, "_metadata.csv"), row.names=1)
-  group <- as.factor(metadata[["group"]])
-
-
   # Differential expression
   de_genes <- readRDS(paste0(folder, "/DATA/", experiment, "_iter", iter, "_DEgenes.rds"))
 
