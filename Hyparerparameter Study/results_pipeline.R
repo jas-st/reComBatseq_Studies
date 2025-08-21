@@ -1,16 +1,6 @@
+source("../helpers.R")
 library(polyester)
 library(recombatseqv2)
-library(ggplot2)
-library(Rtsne)
-library(scales)
-library(DESeq2)
-library(Biostrings)
-library(MASS)
-library(caret)
-library(SingleCellExperiment)
-library(scater)
-library(ggpubr)
-library(stringr)
 
 # gene lengths + experiment settings
 gene_lengths <- t(read.csv("../gene_lengths_ch38.csv", row.names=1))
@@ -54,6 +44,7 @@ for (areg in alpha_regfolgs) {
       cat(paste("Iteration", iter, lambda_reg,alpha_reg,"\n"))
       # set gene widths
       gene_widths <- sample(gene_lengths, gene_count)
+      gene_widths <- round(5*gene_widths/100)
       gene_names <- paste0("gene", 1:gene_count)
 
       ## true DE genes
@@ -93,15 +84,15 @@ for (areg in alpha_regfolgs) {
 
       # Batch correction
       start.time <- Sys.time()
-      count_batchremoved <- ComBat_seq(count_batch, batch = as.factor(batch), group = as.factor(group))
+      count_batchremoved <- reComBat_seq(count_batch, batch = as.factor(batch), group = as.factor(group))
       end.time <- Sys.time()
       time_noreg <- as.numeric(difftime(end.time,start.time, units="mins"))
 
-      covmat <- createConfoundedDesign(N_total_sample)
-      qr(covmat)$rank
+      covmat <- createConfoundedDesign(N_total_sample)[[2]]
+      #qr(covmat)$rank
 
       start.time <- Sys.time()
-      count_batchremoved_reg <- ComBat_seq(count_batch, batch = as.factor(batch), group = as.factor(group),
+      count_batchremoved_reg <- reComBat_seq(count_batch, batch = as.factor(batch), group = as.factor(group),
                                            covar_mod = covmat, lambda_reg=lambda_reg, alpha_reg=alpha_reg)
       end.time <- Sys.time()
       time_reg <- as.numeric(difftime(end.time,start.time, units="mins"))
