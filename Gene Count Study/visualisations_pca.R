@@ -1,3 +1,8 @@
+source("helpers.R")
+library(ggplot2)
+library(ggpubr)
+library(scater)
+
 experiment <- "2(14)"
 folder <- "Gene Count Study"
 gene_count = round(2^14) # amount of genes
@@ -81,7 +86,7 @@ for(iter in 1:5){
 
 
   ggarrange(ggar1_1, ggar2_1, ggar1_2, ggar2_2, nrow=4,
-            labels=c("A","B","A","B"))
+            labels=c("A","A","B","B"))
 
   ggsave(paste0(folder, "/PCA Plots/", experiment, "_iter", iter, "_PCAplots.png"), height=10, width=10, dpi=300)
 
