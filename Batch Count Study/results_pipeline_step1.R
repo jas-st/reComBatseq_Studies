@@ -2,6 +2,7 @@ library(airway)
 library(recombatseqv2)
 library(splatter)
 library(stringr)
+source("../helpers.R")
 
 data(airway)
 airway_counts <- as.matrix(assay(airway))
