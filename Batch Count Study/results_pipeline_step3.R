@@ -1,7 +1,4 @@
-library(airway)
-library(recombatseqv2)
-library(splatter)
-library(stringr)
+library(limma)
 source("../helpers.R")
 
 experiment <- "2(14)"
