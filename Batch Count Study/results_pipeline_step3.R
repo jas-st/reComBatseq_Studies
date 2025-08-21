@@ -1,3 +1,9 @@
+library(airway)
+library(recombatseqv2)
+library(splatter)
+library(stringr)
+source("../helpers.R")
+
 experiment <- "2(14)"
 folder <- "Batch Count Study"
 
