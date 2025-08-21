@@ -1,3 +1,8 @@
+source("helpers.R")
+library(ggplot2)
+library(ggpubr)
+library(scater)
+
 experiment <- "2(14)"
 folder <- "Sample Count Study"
 N_total_sample <- round(2^10) # total number of samples
