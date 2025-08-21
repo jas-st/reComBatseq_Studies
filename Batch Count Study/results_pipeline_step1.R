@@ -79,7 +79,7 @@ for(iter in 1:5){
             paste0(folder, "/DATA/", experiment, "/covmat.csv"))
 
   start.time <- Sys.time()
-  recombatseq_df <- ComBat_seq(batch_df, batch = as.factor(batch), group = as.factor(group),
+  recombatseq_df <- reComBat_seq(batch_df, batch = as.factor(batch), group = as.factor(group),
                                covar_mod = covmat, lambda_reg=lambda_reg, alpha_reg=alpha_reg)
   end.time <- Sys.time()
   time_reg <- as.numeric(difftime(end.time,start.time, units="mins"))
