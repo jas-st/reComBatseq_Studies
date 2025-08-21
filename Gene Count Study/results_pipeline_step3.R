@@ -1,3 +1,7 @@
+library(edgeR)
+library(limma)
+source("../helpers.R")
+
 experiment <- "2(14)"
 folder <- "Gene Count Study"
 gene_count = round(2^14) # amount of genes
