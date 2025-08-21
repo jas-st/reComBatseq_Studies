@@ -1,3 +1,7 @@
+library(edgeR)
+library(limma)
+source("../helpers.R")
+
 experiment <- "2(14)"
 folder <- "Sample Count Study"
 N_total_sample <- round(2^14) # total number of samples
