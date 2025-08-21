@@ -1,17 +1,6 @@
 library(polyester)
 library(recombatseqv2)
-library(ggplot2)
-library(Rtsne)
-library(scales)
-library(DESeq2)
-library(Biostrings)
-library(MASS)
-library(caret)
-library(SingleCellExperiment)
-library(scater)
-library(ggpubr)
-library(stringr)
-library(dplyr)
+source("../helpers.R")
 
 # gene lengths + experiment settings
 gene_lengths <- t(read.csv("../gene_lengths_ch38.csv", row.names=1))
@@ -43,6 +32,7 @@ for(iter in 1:5){
   cat(paste("Iteration", iter, "\n"))
   # set gene widths
   gene_widths <- sample(gene_lengths, gene_count)
+  gene_widths <- round(5*gene_widths/100)
   gene_names <- paste0("gene", 1:gene_count)
 
   ## true DE genes
@@ -96,7 +86,7 @@ for(iter in 1:5){
 
   # Batch correction
   start.time <- Sys.time()
-  combatseq_df <- ComBat_seq(batch_df, batch = as.factor(batch), group = as.factor(group))
+  combatseq_df <- reComBat_seq(batch_df, batch = as.factor(batch), group = as.factor(group))
   end.time <- Sys.time()
   time_noreg <- as.numeric(difftime(end.time,start.time, units="mins"))
 
@@ -108,7 +98,7 @@ for(iter in 1:5){
             paste0(folder, "/DATA/",experiment,"_covmat.csv"))
 
   start.time <- Sys.time()
-  recombatseq_df <- ComBat_seq(batch_df, batch = as.factor(batch), group = as.factor(group),
+  recombatseq_df <- reComBat_seq(batch_df, batch = as.factor(batch), group = as.factor(group),
                                        covar_mod = covmat, lambda_reg=lambda_reg, alpha_reg=alpha_reg)
   end.time <- Sys.time()
   time_reg <- as.numeric(difftime(end.time,start.time, units="mins"))
