@@ -7,25 +7,79 @@ Summary of the pipelines and experiments associated with `reComBat-seq`
 
 #### Hyperparameter Study
 
-+ **sim_DEpipe.R, sim_DEpipe_helpers.R**
-    + Pipeline and helper functions for simulations. Run sim_DEpipe.R to produce the simulation results. 
-    + Usage: ``Rscript sim_DEpipe.R <mean batch effect> <dispersion batch effect> <total number of samples>``
-    + True and false positive rates will be stored in CSV files. 
-    + Modify the parameters to change the study design, level of biological signal, sequencing depth, etc.
-+ **qsub_simDEpipe.py**
-    + Script to run (qsub to cluster) multiple experiments
-+ **visualize.R, visualize_helpers.R**
-    + Script and helper functions to visualize the simulation results. Run visualize.R to generate the plot based on the CSV result files. 
-    + Change the paths to files if necessary.
++ **results_pipeline.R**
+    + Runs a hyperparameter grid search varying `alpha` and `lambda` for different mean (`mbfoldX`) and dispersion (`dbfold`) batch effects.
+    + Outputs CSV files (`mbfoldX_dbfoldY.csv`) storing precision values for each parameter combination (results stored in `result_csvs.zip`).
++ **visualisations.R**
+    + Creates the heatmap based on the result dataframes.
+    + Results visualised in `hyperparams_heatmap2.png`.
 
-### Real data application
+#### Gene Count Study
 
-+ **gfrn_application.R, gfrn_DE.R, gfrn_helpers.R**
-    + Script and helper functions for application example on the GFRN signature dataset. Run gfrn_application.R for the PCA analysis. Run gfrn_DE.R for differential expression analysis.
-    + Change the paths to files at the top of the script, if necessary.
-+ **signature_data.rds**
-    + RDS object for the cleaned signature dataset, published[4] and used in our previous work[5,6].
-+ **ras-pathway-gene-names.csv**
-    + genes in RAS signaling pathway, obtained from [NCI website](https://www.cancer.gov/research/key-initiatives/ras/ras-central/blog/2015/ras-pathway-v2).
++ **results_pipeline_step1.R**
+    + Simulates RNA-seq datasets with and without batch effects - 1024 samples and genes varying between 128 and 20 171.
+    + Applies `ComBat-seq` and `reComBat-seq` for batch correction, runs DE analysis (edgeR) on all data, computes precision/TPR/FPR.
+    + Saves raw counts, normalized counts (voom/TMM), confounded covariate matrices and corrected count matrices as CSV files.
++ **results_pipeline_step2_pycombat.ipynb, results_pipeline_step2_recombat.ipynb**
+    + Applies `reComBat` and `pyComBat-seq` for batch correction on the simulated data from the previous step.
+    + For `reComBat` it uses the transformed normalized counts instead of the raw matrix.
+    + A modified version of `pyComBat-seq` is used, that allows confounded matrices.
+    + Runs LDA analysis on all data (raw, `ComBat-seq`, `reComBat-seq`, `reComBat`, `pyComBat-seq`).
++ **results_pipeline_step3**
+    + Runs DE analysis on the `reComBat` (limma) and `pyComBat-seq` (edgeR) corrected data.
++ **visualisations_pca.R**
+    + Creates PCA plots for the simulated and corrected data.
+    + All plots are stored in the **PCA Plots** directory.
++ **visualisations_summary.R**
+    + Creates the summary plot for all the methods.
+    + Precision/LDA/Time are illustrated in **gene_plot.png**, TPR/FPR in **genes_plot_2.png**.
 
-6. Zhang, Y., Jenkins, D. F., Manimaran, S., & Johnson, W. E. (2018). Alternative empirical Bayes models for adjusting for batch effects in genomic studies. *BMC bioinformatics*, 19(1), 262.
+
+ 
+#### Sample Count Study
+
++ **results_pipeline_step1.R**
+    + Simulates RNA-seq datasets with and without batch effects - 1024 genes and samples varying between 16 and 16 384.
+    + Applies `ComBat-seq` and `reComBat-seq` for batch correction, runs DE analysis (edgeR) on all data, computes precision/TPR/FPR.
+    + Saves raw counts, normalized counts (voom/TMM), confounded covariate matrices and corrected count matrices as CSV files.
++ **results_pipeline_step2_pycombat.ipynb, results_pipeline_step2_recombat.ipynb**
+    + Applies `reComBat` and `pyComBat-seq` for batch correction on the simulated data from the previous step.
+    + For `reComBat` it uses the transformed normalized counts instead of the raw matrix.
+    + A modified version of `pyComBat-seq` is used, that allows confounded matrices.
+    + Runs LDA analysis on all data (raw, `ComBat-seq`, `reComBat-seq`, `reComBat`, `pyComBat-seq`).
++ **results_pipeline_step3**
+    + Runs DE analysis on the `reComBat` (limma) and `pyComBat-seq` (edgeR) corrected data.
++ **visualisations_pca.R**
+    + Creates PCA plots for the simulated and corrected data.
+    + All plots are stored in the **PCA Plots** directory.
++ **visualisations_summary.R**
+    + Creates the summary plot for all the methods.
+    + Precision/LDA/Time are illustrated in **sample_plot.png** and **sample_plot_3.png**, TPR/FPR in **genes_plot_2.png**.
+ 
+#### Batch Count Study
+
++ **results_pipeline_step1.R**
+    + Simulates RNA-seq datasets with and without batch effects - 6000 samples, 1024 genes and batches varying between 2 and 40.
+    + Applies `reComBat-seq` for batch correction, runs DE analysis (edgeR) on all data, computes precision/TPR/FPR.
+    + Saves raw counts, normalized counts (voom/TMM), confounded covariate matrices and corrected count matrices as CSV files.
++ **results_pipeline_step2.ipynb**
+    + Applies `reComBat` for batch correction on the simulated data from the previous step.
+    + Uses the transformed normalized counts instead of the raw matrix.
+    + Runs LDA analysis on all data (raw, `reComBat-seq`, `reComBat`).
++ **results_pipeline_step3**
+    + Runs DE analysis on the `reComBat` (limma) corrected data.
++ **visualisations_umap.ipynb**
+    + Creates UMAP plots for the simulated and corrected data.
+    + Example plots are **batch_comparison.png** and **batch_iterations_plot.png**
++ **visualisations_summary.R**
+    + Creates the summary plot for all the methods.
+    + Precision/LDA/Time are illustrated in **batch_plot.png**, TPR/FPR in **batch_plot_2.png**.
+ 
+### Real Data
+
++ **real_data_pipeline_recombatseq.R**
+    + Applies `reComBat-seq` for batch correction on the dataset (tissue-wise).
+    + Saves the corrected count matrices as CSV files.
++ **real_data_pipeline_recombatseq.R**
+    + Creates the UMAP plots for each tissue - raw and `reCombat`/`reComBat-seq` corrected.
+    + The plots can be found in the `UMAP Plots` directory

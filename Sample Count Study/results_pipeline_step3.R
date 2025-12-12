@@ -1,8 +1,12 @@
+library(edgeR)
+library(limma)
+source("../helpers.R")
+
 experiment <- "2(14)"
 folder <- "Sample Count Study"
 N_total_sample <- round(2^14) # total number of samples
 
-gene_count = round(2^10) # amount of genes
+gene_count = 5000 # amount of genes
 n_batches <- 2 # amount of batches
 n_groups <- 2 # amount of biological groups
 
@@ -11,6 +15,11 @@ group <- rep(rep(0:(n_groups-1), n_batches), each=N_total_sample/(n_batches*n_gr
 
 stats_recombat <- vector("list", 5)
 stats_pycombat <- vector("list", 5)
+
+### in case of a crash/ sudden data loss - load in the backup results generated during the loop instead of the empty stats lists
+### and run the loop only for the missing interations
+#stats_recombat <- readRDS(paste0(folder, "/DATA/", experiment, "_iter", iter, "_backup_recombat.rds"))
+#stats_pycombat <- readRDS(paste0(folder, "/DATA/", experiment, "_iter", iter, "_backup_pycombat.rds"))
 
 for(iter in 1:5){
   cat(paste("Iteration", iter, "\n"))
@@ -22,7 +31,7 @@ for(iter in 1:5){
   de_genes <- readRDS(paste0(folder, "/DATA/", experiment, "_iter", iter, "_DEgenes.rds"))
 
   # reComBat
-  vfit <- lmFit(recombat_df, model.matrix(~as.factor(group)))
+  vfit <- lmFit(scale(recombat_df), model.matrix(~as.factor(group)))
   efit <- eBayes(vfit)
   tests <- decideTests(efit)
   recombat_cor <- which(tests[,2]!=0)
@@ -36,6 +45,9 @@ for(iter in 1:5){
   stats_recombat[[iter]] <- perfStats(recombat_cor, de_genes, gene_count)
   stats_pycombat[[iter]] <- perfStats(pycombat_cor, de_genes, gene_count)
 
+  # Back up results
+  saveRDS(stats_pycombat, file = paste0(folder, "/DATA/", experiment, "_iter", iter, "_backup_pycombat.rds"))
+  saveRDS(stats_recombat, file = paste0(folder, "/DATA/", experiment, "_iter", iter, "_backup_recombat.rds"))
 
   rm(de_genes, vfit, efit, tests, recombat_cor, pycombat_cor)
 }

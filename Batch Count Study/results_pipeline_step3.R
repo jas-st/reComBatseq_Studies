@@ -1,4 +1,11 @@
+<<<<<<< HEAD
 experiment <- "2"
+=======
+library(limma)
+source("../helpers.R")
+
+experiment <- "2(14)"
+>>>>>>> 3b742e2f808bbd98c795f7b8365d091c4438e3cd
 folder <- "Batch Count Study"
 
 gene_count = round(2^10) # amount of genes
@@ -20,7 +27,7 @@ for(iter in 1:5){
   de_genes <- as.numeric(unlist(str_extract_all(de_genes, "\\d+")))
 
   # reComBat
-  vfit <- lmFit(recombat_df, model.matrix(~as.factor(group)))
+  vfit <- lmFit(scale(recombat_df), model.matrix(~as.factor(group)))
   efit <- eBayes(vfit)
   tests <- decideTests(efit)
   recombat_cor <- which(tests[,2]!=0)

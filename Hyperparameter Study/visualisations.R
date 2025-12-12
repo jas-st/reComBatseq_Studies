@@ -1,6 +1,5 @@
 library(dplyr)
 library(viridis)
-library(stringr)
 library(tidyverse)
 
 #### HYPERPARAMETERS

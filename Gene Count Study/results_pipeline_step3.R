@@ -1,3 +1,7 @@
+library(edgeR)
+library(limma)
+source("../helpers.R")
+
 experiment <- "2(14)"
 folder <- "Gene Count Study"
 gene_count = round(2^14) # amount of genes
@@ -23,7 +27,7 @@ for(iter in 1:5){
   de_genes <- readRDS(paste0(folder, "/DATA/", experiment, "_iter", iter, "_DEgenes.rds"))
 
   # reComBat
-  vfit <- lmFit(recombat_df, model.matrix(~as.factor(group)))
+  vfit <- lmFit(scale(recombat_df), model.matrix(~as.factor(group)))
   efit <- eBayes(vfit)
   tests <- decideTests(efit)
   recombat_cor <- which(tests[,2]!=0)
