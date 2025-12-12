@@ -1,11 +1,7 @@
-<<<<<<< HEAD
-experiment <- "2"
-=======
 library(limma)
 source("../helpers.R")
 
-experiment <- "2(14)"
->>>>>>> 3b742e2f808bbd98c795f7b8365d091c4438e3cd
+experiment <- "2"
 folder <- "Batch Count Study"
 
 gene_count = round(2^10) # amount of genes
