@@ -76,6 +76,7 @@ Summary of the pipelines and experiments associated with `reComBat-seq`
     + Precision/LDA/Time are illustrated in **batch_plot.png**, TPR/FPR in **batch_plot_2.png**.
  
 ### Real Data
+Code to reproduce results regarding algorithm comparisons on real data and other results shown in the accompanying paper can be found in `algo_comparisons`. Data is available on [Zenodo](https://doi.org/10.5281/zenodo.19736515)
 
 + **real_data_pipeline_recombatseq.R**
     + Applies `reComBat-seq` for batch correction on the dataset (tissue-wise).
