@@ -1,0 +1,74 @@
+library("optparse")
+library('reComBatseq')
+library('limma')
+library('edgeR')
+
+
+option_list = list(
+    make_option(
+        c('-i', '--input'),
+        default = NULL,
+        help = 'tab-separated file containing expression data samples x genes'
+    ),
+    make_option(
+        c('-m', '--metadata'),
+        default = NULL,
+        help = 'tab-separated file copntaining metadata to use for batch correction',
+    ),
+    make_option(
+	c('-b', '--batch'),
+	default = NULL,
+	help = 'name of the column in meta containing the batch information'
+    ),
+    make_option(
+	c('-c', '--covars'),
+	default = NULL,
+	help = "names of additional biological covariates to preserve written as a whole string separated by a comma e.g. 'col1,col2,col3'"
+    ),
+    make_option(
+        c('-n', '--nproc'),
+        type = 'integer',
+        default = 1,
+        help = 'number of processes to use for correction'
+    )
+)
+
+opt_parser <- OptionParser(option_list=option_list)
+args <- parse_args(opt_parser)
+
+counts <- read.table(
+    args$input,
+    sep = '\t',
+    quote = '',
+    header = TRUE,
+    row.names = 'X'
+)
+
+meta <- read.table(
+    args$metadata,
+    sep = '\t',
+    quote = '',
+    header = TRUE,
+    row.names = 'X'
+)
+
+if(!is.null(args$covars)) {
+    args$covars <- strsplit(args$covars, ',')[[1]]
+    covars = meta[args$covars]
+} else {
+    covars = NULL
+}
+
+corrected <- reComBat.seq(
+    t(counts), 
+    batch=meta[,args$batch], 
+    wanted.variation = covars,
+    num.threads = args$nproc
+)
+
+write.table(
+    corrected, 
+    file = gsub('.tsv', '.recombatseq.tsv', args$input), 
+    sep = '\t', 
+    quote = FALSE
+)
